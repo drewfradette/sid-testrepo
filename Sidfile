@@ -1,0 +1,34 @@
+---
+# Images the tasks will be run against.
+name: Sid Test Repository (Public)
+images:
+  - sid/ruby:1.9.3
+  - sid/ruby:2.0.0
+  - sid/ruby:2.1.0
+
+# Docker containers that will be linked
+provides:
+  - sid/postgres
+  - sid/redis
+
+# Tasks that the CI will be able to run.
+tasks:
+  setup:
+    steps:
+      - bundle install
+
+  # An example of running rspec
+  test:
+    dependencies:
+      - setup
+  
+    # Steps run sequentially.
+    steps:
+      - bundle exec rspec ./spec
+
+  publish:
+    # Tasks that this task depends on.
+    dependencies:
+      - test
+    steps:
+      - bundle exec publish
